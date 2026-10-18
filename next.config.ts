@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Object form so Unsplash's query params (?auto=format&fit=crop...) are allowed;
+    // the `new URL(...)` form forbids any query string.
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com", pathname: "/**" }],
+  },
   turbopack: {
     rules: {
       "*.css": {
