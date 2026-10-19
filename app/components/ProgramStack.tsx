@@ -4,16 +4,18 @@ import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, type RefObject } from "react";
 
-export type AgendaItem = { time?: string; title: string; detail: string };
+// `steps` lists the topics inside a longer stage, shown as small tags
+export type AgendaItem = { time?: string; title: string; detail: string; steps?: string[] };
 
-// A card is either an image card (photo on top, copy below) or, when `agenda` is set, a timeline card
+// Image on one side, the description and a numbered agenda on the other
 export type ProgramCard = {
   eyebrow: string;
   title: string;
   body: string;
-  image?: string | null;
-  imageAlt?: string;
-  agenda?: AgendaItem[];
+  // set to a path in /public; null shows a placeholder
+  image: string | null;
+  imageAlt: string;
+  agenda: AgendaItem[];
 };
 
 const STICKY_TOP = 80; 
@@ -69,20 +71,23 @@ function StackedCard({
   return (
     <motion.article
       style={motionStyle}
-      className="origin-[50%_0%] overflow-hidden rounded-4xl bg-white shadow-[0_40px_80px_-30px_rgba(29,23,41,0.4)] ring-1 ring-ink/5 will-change-transform md:h-[min(calc(100svh-7rem),48rem)]"
+      className="origin-[50%_0%] overflow-hidden rounded-4xl bg-white shadow-[0_40px_80px_-30px_rgba(29,23,41,0.4)] ring-1 ring-ink/5 will-change-transform lg:h-[clamp(36rem,calc(100svh-7rem),44rem)]"
     >
-      {card.agenda ? <AgendaContent card={card} agenda={card.agenda} /> : <ImageContent card={card} />}
+      <CardContent card={card} />
     </motion.article>
   );
 }
 
-// Photo across the top with the title in its bottom-left corner, copy underneath
-function ImageContent({ card }: { card: ProgramCard }) {
+// Photo with the title in its bottom-left corner, beside the description and a timeline that draws itself in
+function CardContent({ card }: { card: ProgramCard }) {
+  const reduceMotion = useReducedMotion();
+  const inView = { once: true, amount: 0.4 } as const;
+
   return (
-    <div className="flex h-full flex-col">
-      <div className="relative aspect-video min-h-0 bg-linear-to-br from-ink-soft to-accent md:aspect-auto md:flex-1">
+    <div className="grid h-full lg:grid-cols-[5fr_6fr]">
+      <div className="relative aspect-video min-h-0 bg-linear-to-br from-ink-soft to-accent lg:aspect-auto">
         {card.image ? (
-          <Image src={card.image} alt={card.imageAlt ?? ""} fill sizes="(min-width: 1280px) 1216px, 100vw" className="object-cover" />
+          <Image src={card.image} alt={card.imageAlt} fill sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw" className="object-cover" />
         ) : (
           <svg
             viewBox="0 0 24 24"
@@ -100,65 +105,54 @@ function ImageContent({ card }: { card: ProgramCard }) {
         )}
         {/* fade keeps the title readable on any photo */}
         <div aria-hidden className="absolute inset-0 bg-linear-to-t from-ink/80 via-ink/25 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:px-14">
+        <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-light sm:text-sm">{card.eyebrow}</p>
-          <h3 className="mt-3 max-w-3xl font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            {card.title}
-          </h3>
+          <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">{card.title}</h3>
         </div>
       </div>
 
-      <div className="p-6 sm:p-10 lg:px-14">
-        <p className="text-base leading-relaxed text-muted sm:text-lg">{card.body}</p>
-      </div>
-    </div>
-  );
-}
-
-// Dark intro panel beside a vertical timeline that draws itself in when the card comes into view
-function AgendaContent({ card, agenda }: { card: ProgramCard; agenda: AgendaItem[] }) {
-  const reduceMotion = useReducedMotion();
-  const inView = { once: true, amount: 0.4 } as const;
-
-  return (
-    <div className="grid h-full md:grid-cols-[2fr_3fr]">
-      <div className="bg-night flex flex-col justify-end p-8 text-white sm:p-12 lg:p-14">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-light sm:text-sm">{card.eyebrow}</p>
-        <h3 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-5xl">{card.title}</h3>
-        <p className="mt-5 text-base leading-relaxed text-white/70 sm:text-lg">{card.body}</p>
-      </div>
-
-      <div className="flex min-h-0 items-center overflow-y-auto p-8 sm:p-12 lg:p-14">
-        <ol className="w-full">
-          {agenda.map((item, i) => (
+      <div className="flex min-h-0 flex-col justify-center p-6 sm:p-10">
+        <p className="leading-relaxed text-muted">{card.body}</p>
+        <p className="mt-7 text-xs font-semibold uppercase tracking-[0.18em] text-ink/40">The agenda</p>
+        <ol className="mt-4 w-full">
+          {card.agenda.map((item, i) => (
             <motion.li
               key={item.title}
-              className="relative flex gap-5 pb-6 last:pb-0 sm:gap-6"
+              className="relative flex gap-4 pb-4 last:pb-0"
               initial={reduceMotion ? false : { opacity: 0, x: 12 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={inView}
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 + i * 0.12 }}
             >
               {/* rail segment down to the next stop, drawn in sequence */}
-              {i < agenda.length - 1 && (
+              {i < card.agenda.length - 1 && (
                 <motion.span
                   aria-hidden
-                  className="bg-accent-gradient absolute bottom-0 left-4.75 top-10 w-px origin-top"
+                  className="bg-accent-gradient absolute bottom-0 left-4.25 top-9 w-px origin-top"
                   initial={reduceMotion ? false : { scaleY: 0 }}
                   whileInView={{ scaleY: 1 }}
                   viewport={inView}
                   transition={{ duration: 0.3, ease: "easeInOut", delay: 0.3 + i * 0.12 }}
                 />
               )}
-              <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white font-display text-sm font-semibold text-accent ring-1 ring-accent/30">
+              <span className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white font-display text-xs font-semibold text-accent ring-1 ring-accent/30">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div className="pt-1.5">
+              <div className="pt-0.5">
                 {item.time && (
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{item.time}</p>
                 )}
-                <p className="font-display text-lg font-semibold tracking-tight sm:text-xl">{item.title}</p>
-                <p className="mt-1 text-sm leading-relaxed text-muted sm:text-base">{item.detail}</p>
+                <p className="font-display font-semibold tracking-tight">{item.title}</p>
+                <p className="text-sm leading-relaxed text-muted">{item.detail}</p>
+                {item.steps && (
+                  <ul className="mt-2 flex flex-wrap gap-1.5">
+                    {item.steps.map((step) => (
+                      <li key={step} className="rounded-full bg-accent/8 px-2.5 py-1 text-xs font-medium text-ink/70 ring-1 ring-accent/15">
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </motion.li>
           ))}

@@ -3,13 +3,15 @@ import EnrollForm from "./components/EnrollForm";
 import Reveal from "./components/Reveal";
 import Hero from "./components/Hero";
 import ProgramStack, { type ProgramCard } from "./components/ProgramStack";
+import WaysToJoin, { type Track } from "./components/WaysToJoin";
 import Quote from "./components/Quote";
 
 
 const NAV = [
   { href: "#offer", label: "Offer" },
-  { href: "#students", label: "Students" },
+  { href: "#programs", label: "Programs" },
   { href: "#schools", label: "Schools" },
+  { href: "#students", label: "Students" },
   { href: "#enroll", label: "Enroll" },
 ];
 
@@ -62,48 +64,101 @@ const QUOTE_LEAD = "The reasonable man adapts himself to the world; the unreason
 const QUOTE_PUNCHLINE = "Therefore all progress depends on the unreasonable man.";
 
 
-// Placeholder copy; swap in real content and set `image` to a path in /public
-const STUDENT_PROGRAMS: ProgramCard[] = [
+// Set `image` to a path in /public; null shows a placeholder
+const PROGRAMS: ProgramCard[] = [
   {
-    eyebrow: "For students · 01",
-    title: "Startup Bootcamp — 1 Day",
-    body: "In this one day bootcamp, Students will be introduced to the world of startups and entrepreneurship by founders who have built startups. They will be exposed to basic concepts such as Ideal Customer Profile, Product Market Fit, and Business Model. They will learn how to generate startup ideas, engage in idea generation, and pitch to an audience.",
+    eyebrow: "Program 01 · 1 day",
+    title: "Startup Bootcamp",
+    body: "Founders who have built startups introduce students to the world of startups and entrepreneurship: Ideal Customer Profile, Product Market Fit and Business Model. Then students generate an idea of their own and pitch it.",
     image: "/students.jpg",
     imageAlt: "Students in a classroom, one raising a hand to ask a question",
-  },
-  {
-    eyebrow: "For students · 02",
-    title: "The agenda",
-    body: "Objective: introduce students to entrepreneurship and inspire them to pursue it.",
-    // Add `time` to any session if you want timings shown
     agenda: [
       { title: "Entrepreneurship: An introduction", detail: "What it means to be an entrepreneur, and why it matters." },
-      { title: "Difference between a startup and a business", detail: "Why startups are built to grow fast, and how that changes everything." },
+      { title: "Startup vs. business", detail: "Why startups are built to grow fast, and how that changes everything." },
       { title: "Founder talk: Startup journey", detail: "A founder shares the real story behind their startup." },
       { title: "Idea Generation", detail: "Teams spot a problem and shape a startup idea of their own." },
       { title: "Pitch & Validation", detail: "Pitch the idea to founders and see how well it holds up." },
     ],
   },
-];
-
-const SCHOOL_PROGRAMS: ProgramCard[] = [
   {
-    eyebrow: "For schools · 01",
-    title: "Becoming Entrepreneurial (1-Year)",
-    body: "In this year-long program, students will go through the initial stages of building a startup. From idea  to Product Market Fit. They will find their co-founders, generate ideas, and they will go through each and every step. This will give them the real world experience of building a startup from scratch. If they find the right product market fit, they can even go about launching their startup.",
+    eyebrow: "Program 02 · 1 year",
+    title: "Becoming Entrepreneurial",
+    body: "Students go through the early stages of building a real startup, from idea to Product Market Fit. They find co-founders, generate ideas and work through every step in between. If they find the right fit, they can go on to launch.",
     image: null,
     imageAlt: "Placeholder image",
+    agenda: [
+      {
+        time: "Phase 1",
+        title: "Idea & team",
+        detail: "Think like a founder, form a team and find an idea worth pursuing.",
+        steps: ["Entrepreneurial mindset I", "Ideation", "Co-founders", "Idea validation", "Ideal Customer Profile"],
+      },
+      {
+        time: "Phase 2",
+        title: "Customer",
+        detail: "Talk to real customers and sharpen what you offer them.",
+        steps: ["Customer discovery interviews", "Value proposition", "Entrepreneurial mindset II"],
+      },
+      {
+        time: "Phase 3",
+        title: "Build & launch",
+        detail: "Build a first version, iterate towards fit, and take it to market.",
+        steps: ["MVP", "Product Market Fit", "Go-to-market"],
+      },
+    ],
+  },
+];
+
+const TRACKS: Track[] = [
+  {
+    key: "schools",
+    label: "For schools",
+    headline: "We bring it to your campus.",
+    intro:
+      "We partner with your school and run the programs on your premises. You give us a room and a slot in the timetable; we bring the founders, mentors and material.",
+    facts: [
+      { label: "Where", value: "Your school premises" },
+      { label: "When", value: "Fitted into your school calendar" },
+      { label: "Who", value: "Your students, in teams from their own classes" },
+      { label: "What you need", value: "A room, a slot, and a teacher point of contact" },
+    ],
+    formats: [
+      { program: "Startup Bootcamp", how: "One full day on campus" },
+      { program: "Becoming Entrepreneurial", how: "Regular sessions across the academic year" },
+    ],
+    steps: [
+      "Talk to us about your school and your students.",
+      "Pick the bootcamp, the year-long program, or both.",
+      "We plan the sessions around your calendar.",
+      "Founders and mentors run every session at your school.",
+      "Students pitch their ideas at a showcase on campus.",
+    ],
+    cta: { label: "Partner with us", href: "mailto:hello@loonsclub.in?subject=School%20partnership" },
   },
   {
-    eyebrow: "For schools · 02",
-    title: "The agenda",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    agenda: [
-      { title: "Lorem ipsum", detail: "Dolor sit amet, consectetur adipiscing elit." },
-      { title: "Consectetur adipiscing", detail: "Sed do eiusmod tempor incididunt ut labore." },
-      { title: "Sed do eiusmod", detail: "Ut enim ad minim veniam, quis nostrud." },
-      { title: "Tempor incididunt", detail: "Duis aute irure dolor in reprehenderit." },
+    key: "students",
+    label: "For students",
+    headline: "Build on your weekends.",
+    intro:
+      "Not at a partner school? Join on your own. We run both programs on weekends, with students from schools across Chennai working side by side.",
+    facts: [
+      { label: "Where", value: "Our space in IITM Research Park, Chennai" },
+      { label: "When", value: "Weekends" },
+      { label: "Who", value: "Students from any school, mixed into teams" },
+      { label: "What you need", value: "Curiosity, and your weekends" },
     ],
+    formats: [
+      { program: "Startup Bootcamp", how: "One Saturday or Sunday" },
+      { program: "Becoming Entrepreneurial", how: "Weekend sessions through the year" },
+    ],
+    steps: [
+      "Save a seat using the form below.",
+      "Pick the bootcamp or the year-long program.",
+      "Meet your team and your mentor on the first weekend.",
+      "Build your idea with founders, weekend by weekend.",
+      "Pitch to a panel of founders and investors.",
+    ],
+    cta: { label: "Save a seat", href: "#enroll" },
   },
 ];
 
@@ -173,29 +228,41 @@ export default function Home() {
           <Quote lead={QUOTE_LEAD} punchline={QUOTE_PUNCHLINE} author="George Bernard Shaw" />
         </section>
 
-        {/* PROGRAM FOR STUDENTS */}
-        <section id="students" className="scroll-mt-4 bg-sand px-5 py-24 sm:px-8 sm:py-32">
+        {/* PROGRAMS: what we run, independent of who joins */}
+        <section id="programs" className="scroll-mt-4 bg-sand px-5 py-24 sm:px-8 sm:py-32">
           <div className="mx-auto max-w-7xl">
             <Reveal className="mb-14 max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Programs</p>
               <h2 className="section-title mt-4">
-                Program for <span className="text-gradient">Students</span>
+                Two programs.
               </h2>
+              <p className="mt-6 text-lg leading-relaxed text-muted">
+                Start with a single day that lights the fuse, or spend a year actually building. Both are run by
+                founders who have done it themselves.
+              </p>
             </Reveal>
-            <ProgramStack cards={STUDENT_PROGRAMS} />
+            <ProgramStack cards={PROGRAMS} />
           </div>
         </section>
 
-        {/* PROGRAM FOR SCHOOLS */}
-        <section id="schools" className="scroll-mt-4 bg-white px-5 py-24 sm:px-8 sm:py-32">
+        {/* WAYS TO JOIN: the same programs, delivered at school or on weekends */}
+        <section id="join" className="relative scroll-mt-4 bg-linear-to-b from-sand to-white px-5 py-24 sm:px-8 sm:py-32">
+          {/* nav targets; the switch picks the matching side */}
+          <span id="schools" aria-hidden className="absolute top-0 scroll-mt-4" />
+          <span id="students" aria-hidden className="absolute top-0 scroll-mt-4" />
           <div className="mx-auto max-w-7xl">
-            <Reveal className="mb-14 max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Programs</p>
+            <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Ways to join</p>
               <h2 className="section-title mt-4">
-                Program for <span className="text-gradient">Schools</span>
+                At your <span className="text-gradient">school</span>, or on your{" "}
+                <span className="text-gradient">weekends</span>.
               </h2>
+              <p className="mt-6 text-lg leading-relaxed text-muted">
+                Both programs run in two ways. Schools bring us onto their campus; students can also join on their
+                own at weekends.
+              </p>
             </Reveal>
-            <ProgramStack cards={SCHOOL_PROGRAMS} />
+            <WaysToJoin tracks={TRACKS} />
           </div>
         </section>
 
@@ -304,9 +371,9 @@ export default function Home() {
                   </a>
                 </li>
                 <li className="leading-relaxed">
-                  2nd Floor, 14 Cenotaph Road,
+                  Number, Street,
                   <br />
-                  Teynampet, Chennai 600018
+                  Area, Chennai 600000
                   <br />
                   Tamil Nadu, India
                 </li>

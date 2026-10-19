@@ -12,10 +12,10 @@ type QuoteProps = {
 };
 
 const WORD_START = 150; // ms before the first word
-const WORD_STEP = 80; // ms between words
+const WORD_STEP = 60; // ms between words
 const WORD_FADE = 900; // matches .quote-word transition
-const TYPE_PAUSE = 300; // beat between the last word and the first keystroke
-const TYPE_STEP = 55; // ms per character
+const TYPE_PAUSE = 250; // beat between the last word and the first keystroke
+const TYPE_STEP = 30; // ms per character
 
 export default function Quote({ lead, punchline, author }: QuoteProps) {
   const reduceMotion = useReducedMotion();

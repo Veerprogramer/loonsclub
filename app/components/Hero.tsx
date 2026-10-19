@@ -1,12 +1,17 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { useState } from "react";
 import PencilPortrait from "./Pencilportrait";
 
 type NavItem = { href: string; label: string };
 
-// Headline, subtext and CTA wait for the sketch's border lines to finish, then slide up together while the shading fills in.
+// Badge, headline, subtext and CTA rise in one after another while the painting is still filling in.
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+};
+
 export default function Hero({ nav }: { nav: NavItem[] }) {
   const reduceMotion = useReducedMotion();
   const [revealed, setRevealed] = useState(false);
@@ -40,33 +45,34 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
         {/* width is capped by viewport height so the whole portrait stays on screen */}
         <PencilPortrait
           className="w-full max-w-[min(30rem,60svh)] lg:max-w-[min(42rem,84svh)]"
-          onOutlineDrawn={() => setRevealed(true)}
+          onReveal={() => setRevealed(true)}
         />
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={shown ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: reduceMotion ? 0 : 0.6, ease: "easeOut" }}
+          initial={reduceMotion ? false : "hidden"}
+          animate={shown ? "shown" : "hidden"}
+          transition={{ staggerChildren: 0.28 }}
           className="text-center lg:text-left"
         >
-          <p className="inline-flex items-center gap-2 rounded-full bg-accent/8 px-3.5 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/20">
+          <motion.p variants={item} className="inline-flex items-center gap-2 rounded-full bg-accent/8 px-3.5 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/20">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Founder program · Chennai
-          </p>
-          <h1 className="mt-6">
+            Entrepreneur program · Chennai
+          </motion.p>
+          <motion.h1 variants={item} className="mt-6">
             <span className="block font-hero text-[clamp(2.5rem,1.6rem+3.4vw,4.75rem)] font-light leading-none tracking-[-0.02em]">
               Here is to the
             </span>
-            {/* "Ones" steps in from the left so the two words don't stack flush */}
+            
             <span className="mt-5 block font-ransom text-[clamp(3.5rem,2.4rem+4.6vw,7rem)] leading-[1.05]">
               <span className="text-gradient block">Crazy</span>
               <span className="block pl-[0.9em] lg:pl-[1.3em]">Ones</span>
             </span>
-          </h1>
-          <p className="hero-copy mx-auto mt-7 max-w-md text-lg leading-relaxed text-ink/75 sm:text-xl lg:mx-0">
+          </motion.h1>
+          <motion.p variants={item} className="hero-copy mx-auto mt-7 max-w-md text-lg leading-relaxed text-ink/75 sm:text-xl lg:mx-0">
             Young minds exploring big ideas, guided by real founders.
-          </p>
-          <a
+          </motion.p>
+          <motion.a
+            variants={item}
             href="#enroll"
             className="group mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-8 py-4 text-base font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
           >
@@ -74,7 +80,7 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
               →
             </span>
-          </a>
+          </motion.a>
         </motion.div>
       </div>
     </header>
