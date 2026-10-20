@@ -347,11 +347,8 @@ export default function Home() {
           </Reveal> */}
           <div className="mt-16 grid gap-12 border-t border-cream/15 pt-12 sm:grid-cols-3">
             <div>
-              <p className="flex items-center gap-2.5 font-display text-xl font-bold tracking-tight">
-                <span className="bg-accent-gradient flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white">
-                  L
-                </span>
-                Loons Club
+              <p className="flex items-center gap-2.5 font-logo text-xl font-bold tracking-tight lowercase">
+                loonsclub
               </p>
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">
                 Helping students start something before they graduate.

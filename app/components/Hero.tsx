@@ -20,11 +20,11 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
   return (
     <header className="relative flex min-h-svh flex-col overflow-hidden bg-white bg-[radial-gradient(ellipse_50%_60%_at_85%_45%,rgba(124,58,237,0.10),transparent_70%)] text-ink">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
-        <a href="#" className="flex items-center gap-2.5 font-display text-xl font-semibold tracking-tight">
+        <a href="#" className="flex items-center gap-2.5 font-logo text-xl font-bold tracking-tight lowercase">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-sm font-bold text-cream">
-            L
+            l
           </span>
-          Loons Club
+          loonsclub
         </a>
         <div className="flex items-center gap-7 text-sm">
           {nav.map((item) => (

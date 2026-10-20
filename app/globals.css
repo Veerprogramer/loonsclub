@@ -22,6 +22,16 @@
   --font-display: var(--font-manrope);
   --font-hero: var(--font-clamp);
   --font-ransom: var(--font-kaito);
+  --font-logo: "Nexa", var(--font-manrope), system-ui, sans-serif;
+}
+
+/* Wordmark face: uses an installed Nexa, else /public/Nexa-Bold.otf once added */
+@font-face {
+  font-family: "Nexa";
+  src: local("Nexa Bold"), local("Nexa-Bold"), url("/Nexa-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 html {
