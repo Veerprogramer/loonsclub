@@ -70,8 +70,8 @@ const PROGRAMS: ProgramCard[] = [
     eyebrow: "Program 01 · 1 day",
     title: "Startup Bootcamp",
     body: "Founders who have built startups introduce students to the world of startups and entrepreneurship: Ideal Customer Profile, Product Market Fit and Business Model. Then students generate an idea of their own and pitch it.",
-    image: "/students.jpg",
-    imageAlt: "Students in a classroom, one raising a hand to ask a question",
+    image: "/program-bootcamp.jpg",
+    imageAlt: "Students in school uniform working at their desks as a teacher looks on",
     agenda: [
       { title: "Entrepreneurship: An introduction", detail: "What it means to be an entrepreneur, and why it matters." },
       { title: "Startup vs. business", detail: "Why startups are built to grow fast, and how that changes everything." },
@@ -84,8 +84,8 @@ const PROGRAMS: ProgramCard[] = [
     eyebrow: "Program 02 · 1 year",
     title: "Becoming Entrepreneurial",
     body: "Students go through the early stages of building a real startup, from idea to Product Market Fit. They find co-founders, generate ideas and work through every step in between. If they find the right fit, they can go on to launch.",
-    image: null,
-    imageAlt: "Placeholder image",
+    image: "/program-entrepreneurial.jpg",
+    imageAlt: "A team of students gathered around a laptop, working on a project together",
     agenda: [
       {
         time: "Phase 1",
