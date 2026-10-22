@@ -56,7 +56,7 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
         >
           <motion.p variants={item} className="inline-flex items-center gap-2 rounded-full bg-accent/8 px-3.5 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/20">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Entrepreneur program · Chennai
+            Students Entrepreneurship program · Chennai
           </motion.p>
           <motion.h1 variants={item} className="mt-6">
             <span className="block font-hero text-[clamp(2.5rem,1.6rem+3.4vw,4.75rem)] font-light leading-none tracking-[-0.02em]">
@@ -69,7 +69,7 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
             </span>
           </motion.h1>
           <motion.p variants={item} className="hero-copy mx-auto mt-7 max-w-md text-lg leading-relaxed text-ink/75 sm:text-xl lg:mx-0">
-            Young minds exploring big ideas, guided by real founders.
+            Young minds exploring big ideas, guided by experienced founders.
           </motion.p>
           <motion.a
             variants={item}

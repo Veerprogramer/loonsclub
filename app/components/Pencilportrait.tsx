@@ -9,6 +9,12 @@ const REVEAL_START = 0.15;
 const REVEAL_TIME = 3.2;
 // Surrounding content is cued once the sweep is roughly a third of the way down the canvas.
 const CUE_AT = REVEAL_START + REVEAL_TIME * 0.35;
+// A glint runs across the apple once the sketch is complete.
+const GLINT_AT = REVEAL_START + REVEAL_TIME + 0.2;
+
+// The apple in /jobs.jpg (1264×1264), traced around the fingers that overlap it.
+const APPLE =
+  "M740 490C762 477 786 458 815 457C850 457 872 479 879 515C883 535 883 549 878 556L862 560C856 570 855 587 856 596L832 594C812 594 794 603 793 617C792 630 801 635 812 634L836 636C828 654 800 661 770 662C736 663 713 652 701 640C681 620 665 590 664 560C663 531 672 512 691 502C709 493 724 490 740 490Z";
 
 function sweepPath(w: number, h: number, step: number) {
   const slant = w * 0.35;
@@ -92,6 +98,32 @@ export default function PencilPortrait({ image = "/jobs.jpg", className = "", on
           <mask id={id("vignette")} maskUnits="userSpaceOnUse" x={0} y={0} width={w} height={h}>
             <rect width={w} height={h} fill={`url(#${id("vignette-fill")})`} />
           </mask>
+
+          {/* the apple is the one thing in colour: graphite tones mapped onto a glossy red */}
+          <filter id={id("red")} colorInterpolationFilters="sRGB">
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+              <feFuncR type="table" tableValues="0.12 0.42 0.74 0.93 1" />
+              <feFuncG type="table" tableValues="0.01 0.02 0.05 0.2 1" />
+              <feFuncB type="table" tableValues="0.02 0.035 0.07 0.2 1" />
+            </feComponentTransfer>
+          </filter>
+          <filter id={id("feather")} x="-5%" y="-5%" width="110%" height="110%">
+            <feGaussianBlur stdDeviation={1.5} />
+          </filter>
+          <mask id={id("apple")} maskUnits="userSpaceOnUse" x={0} y={0} width={w} height={h}>
+            <path d={APPLE} transform={`scale(${w / 1264} ${h / 1264})`} fill="#fff" filter={`url(#${id("feather")})`} />
+          </mask>
+          <radialGradient id={id("shine")}>
+            <stop offset="0" stopColor="#fff" stopOpacity="0.75" />
+            <stop offset="0.35" stopColor="#fff" stopOpacity="0.3" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id={id("glint")} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#fff" stopOpacity="0.55" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
         </defs>
 
         <g mask={`url(#${id("vignette")})`}>
@@ -103,6 +135,22 @@ export default function PencilPortrait({ image = "/jobs.jpg", className = "", on
             mask={`url(#${id("reveal")})`}
             style={{ mixBlendMode: "multiply" }}
           />
+          <g mask={`url(#${id("reveal")})`}>
+            <g mask={`url(#${id("apple")})`} transform={`scale(${w / 1264} ${h / 1264})`}>
+              <image
+                href={image}
+                width={1264}
+                height={1264}
+                preserveAspectRatio="xMidYMid slice"
+                filter={`url(#${id("red")})`}
+              />
+              <ellipse cx={812} cy={516} rx={34} ry={26} fill={`url(#${id("shine")})`} transform="rotate(-25 812 516)" />
+              <ellipse cx={678} cy={565} rx={6} ry={32} fill={`url(#${id("shine")})`} transform="rotate(12 678 565)" />
+              <g transform="rotate(20 770 560)">
+                <rect className="glint" x={600} y={420} width={70} height={300} fill={`url(#${id("glint")})`} />
+              </g>
+            </g>
+          </g>
         </g>
       </svg>
 
@@ -116,8 +164,17 @@ export default function PencilPortrait({ image = "/jobs.jpg", className = "", on
           animation: draw ${REVEAL_TIME}s cubic-bezier(0.45, 0, 0.25, 1) ${REVEAL_START}s forwards;
         }
         @keyframes draw { to { stroke-dashoffset: 0; } }
+        svg :global(.glint) {
+          opacity: 0;
+          animation: glint 1.1s ease-in-out ${GLINT_AT}s;
+        }
+        @keyframes glint {
+          from { opacity: 1; transform: translateX(0); }
+          to { opacity: 1; transform: translateX(300px); }
+        }
         @media (prefers-reduced-motion: reduce) {
           svg :global(.sweep) { animation: none; stroke-dashoffset: 0; }
+          svg :global(.glint) { animation: none; }
         }
       `}</style>
     </figure>

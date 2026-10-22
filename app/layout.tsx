@@ -39,7 +39,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // browser extensions add their own attributes to <html> before React hydrates
     <html
+      suppressHydrationWarning
       lang="en"
       className={`${clamp.variable} ${manrope.variable} ${inter.variable} ${kaito.variable} h-full antialiased scroll-smooth`}
     >

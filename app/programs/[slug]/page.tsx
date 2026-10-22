@@ -1,0 +1,135 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import JoinTimeline from "../../components/program/JoinTimeline";
+import ProgramHero from "../../components/program/ProgramHero";
+import SessionList from "../../components/program/SessionList";
+import Reveal from "../../components/Reveal";
+import SiteFooter from "../../components/SiteFooter";
+import { getProgram, PROGRAMS } from "../../lib/programs";
+
+// Every section below depends on the slug, so there's no shared shell worth prefetching
+export const instant = false;
+
+export function generateStaticParams() {
+  return PROGRAMS.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: PageProps<"/programs/[slug]">): Promise<Metadata> {
+  const program = getProgram((await params).slug);
+  if (!program) return {};
+  return { title: `${program.title} — Loons Club`, description: program.body };
+}
+
+export default async function ProgramPage({ params }: PageProps<"/programs/[slug]">) {
+  const program = getProgram((await params).slug);
+  if (!program) notFound();
+  const unit = program.sessionUnit.toLowerCase().replace(/s$/, "");
+  const other = PROGRAMS.find((p) => p.slug !== program.slug);
+
+  return (
+    <>
+      <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
+        <Link href="/" className="flex items-center gap-2.5 font-logo text-xl font-bold tracking-tight lowercase">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-sm font-bold text-cream">l</span>
+          loonsclub
+        </Link>
+        <div className="flex items-center gap-7 text-sm">
+          <a href="#join" className="hidden text-ink/70 transition hover:text-ink sm:inline">
+            How to join
+          </a>
+          <a href="#about" className="hidden text-ink/70 transition hover:text-ink sm:inline">
+            About
+          </a>
+          <Link
+            href="/#enroll"
+            className="rounded-full px-4 py-2 font-medium ring-1 ring-ink/25 transition hover:bg-ink hover:text-cream hover:ring-ink"
+          >
+            Apply
+          </Link>
+        </div>
+      </nav>
+
+      <main>
+        <ProgramHero program={program} />
+
+        {/* HOW TO JOIN */}
+        <section id="join" className="scroll-mt-4 overflow-hidden bg-linear-to-b from-white via-sand to-sand px-5 py-24 sm:px-8 sm:py-32">
+          <div className="mx-auto max-w-6xl">
+            <Reveal className="mx-auto mb-20 max-w-2xl text-center lg:mb-28">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">How to join</p>
+              <h2 className="section-title mt-4">
+                From this page to <span className="text-gradient">day one</span>.
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-muted">
+                {program.join.length} steps, and the first one takes two minutes. Join through your school, or on your own at weekends.
+              </p>
+            </Reveal>
+            <JoinTimeline steps={program.join} />
+          </div>
+        </section>
+
+        {/* ABOUT THE PROGRAM */}
+        <section id="about" className="scroll-mt-4 bg-sand px-5 pb-24 sm:px-8 sm:pb-32">
+          <div className="mx-auto max-w-7xl">
+            <div className="bg-night relative overflow-hidden rounded-[2.5rem] p-8 text-white sm:p-12 lg:p-16">
+              <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-end">
+                <Reveal>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-light">About the program</p>
+                  <h2 className="section-title mt-4">
+                    {program.title}, <span className="text-gradient-light">{unit} by {unit}</span>.
+                  </h2>
+                  <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/70">{program.body}</p>
+                </Reveal>
+                <Reveal delay={120}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/50">You leave with</p>
+                  <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                    {program.outcomes.map((o, i) => (
+                      <li key={o} className="rounded-2xl bg-white/6 p-5 ring-1 ring-white/12 backdrop-blur">
+                        <span className="font-display text-sm font-bold text-accent-light">{String(i + 1).padStart(2, "0")}</span>
+                        <p className="mt-2 leading-snug text-white/90">{o}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              </div>
+            </div>
+
+            <div className="mt-20 lg:mt-28">
+              <SessionList sessions={program.sessions} unit={program.sessionUnit} />
+            </div>
+
+            {/* closing call to action */}
+            <Reveal className="mt-24 text-center lg:mt-32">
+              <p className="hero-copy text-2xl italic text-ink/70 sm:text-3xl">{program.tagline}</p>
+              <h2 className="section-title mx-auto mt-4 max-w-3xl">
+                Ready to start <span className="text-gradient">something</span>?
+              </h2>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href="/#enroll"
+                  className="group inline-flex items-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-8 py-4 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
+                >
+                  Save a seat
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+                {other?.href && (
+                  <Link href={other.href} className="group inline-flex items-center gap-2 px-3 py-4 font-medium text-ink/70 transition hover:text-ink">
+                    Or explore {other.title}
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </Link>
+                )}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </>
+  );
+}

@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef, type RefObject } from "react";
+import Link from "next/link";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { useRef, useState, type PointerEvent, type ReactNode, type RefObject } from "react";
 
 // `steps` lists the topics inside a longer stage, shown as small tags
 export type AgendaItem = { time?: string; title: string; detail: string; steps?: string[] };
@@ -16,6 +17,8 @@ export type ProgramCard = {
   image: string | null;
   imageAlt: string;
   agenda: AgendaItem[];
+  // the program's own page
+  href?: string;
 };
 
 const STICKY_TOP = 80; 
@@ -71,10 +74,61 @@ function StackedCard({
   return (
     <motion.article
       style={motionStyle}
-      className="origin-[50%_0%] overflow-hidden rounded-4xl bg-white shadow-[0_40px_80px_-30px_rgba(29,23,41,0.4)] ring-1 ring-ink/5 will-change-transform lg:h-[clamp(36rem,calc(100svh-7rem),44rem)]"
+      className="relative origin-[50%_0%] overflow-hidden rounded-4xl bg-white shadow-[0_40px_80px_-30px_rgba(29,23,41,0.4)] ring-1 ring-ink/5 will-change-transform lg:h-[clamp(36rem,calc(100svh-7rem),44rem)]"
     >
-      <CardContent card={card} />
+      {card.href ? (
+        <CardLink href={card.href} title={card.title}>
+          <CardContent card={card} />
+        </CardLink>
+      ) : (
+        <CardContent card={card} />
+      )}
     </motion.article>
+  );
+}
+
+// The whole card opens the program; with a mouse, an "Explore" badge stands in for the cursor
+function CardLink({ href, title, children }: { href: string; title: string; children: ReactNode }) {
+  const reduceMotion = useReducedMotion();
+  const [hovering, setHovering] = useState(false);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 500, damping: 40 });
+  const springY = useSpring(y, { stiffness: 500, damping: 40 });
+
+  const track = (e: PointerEvent<HTMLAnchorElement>, entering = false) => {
+    if (e.pointerType !== "mouse") return;
+    const box = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - box.left);
+    y.set(e.clientY - box.top);
+    if (entering) {
+      springX.jump(x.get());
+      springY.jump(y.get());
+    }
+    setHovering(true);
+  };
+
+  return (
+    <Link
+      href={href}
+      aria-label={`Explore ${title}`}
+      onPointerEnter={(e) => track(e, true)}
+      onPointerMove={(e) => track(e)}
+      onPointerLeave={() => setHovering(false)}
+      className="block h-full cursor-none rounded-4xl outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-accent/50"
+    >
+      {children}
+      <motion.span
+        aria-hidden
+        className="pointer-events-none absolute left-0 top-0 z-20 -ml-12 -mt-12 flex h-24 w-24 items-center justify-center gap-1 rounded-full bg-ink/90 text-sm font-medium text-white shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)] backdrop-blur"
+        style={{ x: reduceMotion ? x : springX, y: reduceMotion ? y : springY }}
+        initial={false}
+        animate={{ scale: hovering ? 1 : 0, opacity: hovering ? 1 : 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+      >
+        Explore <span aria-hidden>→</span>
+      </motion.span>
+    </Link>
   );
 }
 
@@ -87,7 +141,7 @@ function CardContent({ card }: { card: ProgramCard }) {
     <div className="grid h-full lg:grid-cols-[5fr_6fr]">
       <div className="relative aspect-video min-h-0 bg-linear-to-br from-ink-soft to-accent lg:aspect-auto">
         {card.image ? (
-          <Image src={card.image} alt={card.imageAlt} fill sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw" className="object-cover" />
+          <Image src={card.image} alt={card.imageAlt} fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover" />
         ) : (
           <svg
             viewBox="0 0 24 24"

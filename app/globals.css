@@ -191,7 +191,51 @@ body {
   animation: rise 900ms ease both;
 }
 
+/* Join timeline: a ring bursts from each step as the comet reaches it */
+@keyframes ripple {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+.ripple {
+  animation: ripple 1.1s ease-out forwards;
+}
+@keyframes comet-pulse {
+  50% {
+    transform: scale(1.6);
+    opacity: 0.15;
+  }
+}
+.comet-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: comet-pulse 1.6s ease-in-out infinite;
+}
+
+/* Session cards: a soft violet light follows the cursor (position set from JS) */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(124, 58, 237, 0.09), transparent 60%);
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .ripple,
+  .comet-pulse {
+    animation: none;
+  }
   .reveal,
   .rise,
   .quote-word {
