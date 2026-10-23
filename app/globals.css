@@ -231,9 +231,51 @@ body {
   opacity: 1;
 }
 
+/* Form popup: moons circling the glowing core in the side panel */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.orbit-spin,
+.orbit-spin-reverse {
+  transform-origin: 200px 200px;
+  animation: orbit-spin 18s linear infinite;
+}
+.orbit-spin-reverse {
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+@keyframes orbit-breathe {
+  50% {
+    transform: scale(1.12);
+    opacity: 0.75;
+  }
+}
+.orbit-breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: orbit-breathe 5s ease-in-out infinite;
+}
+
+/* Success tick draws itself in */
+@keyframes draw-tick {
+  from {
+    stroke-dashoffset: 24;
+  }
+}
+.draw-tick {
+  stroke-dasharray: 24;
+  animation: draw-tick 600ms 250ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ripple,
-  .comet-pulse {
+  .comet-pulse,
+  .orbit-spin,
+  .orbit-spin-reverse,
+  .orbit-breathe,
+  .draw-tick {
     animation: none;
   }
   .reveal,

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EnrollPopup } from "../../components/FormPopups";
 import JoinTimeline from "../../components/program/JoinTimeline";
 import ProgramHero from "../../components/program/ProgramHero";
 import SessionList from "../../components/program/SessionList";
 import Reveal from "../../components/Reveal";
 import SiteFooter from "../../components/SiteFooter";
+import SiteNav from "../../components/SiteNav";
 import { getProgram, PROGRAMS } from "../../lib/programs";
 
 // Every section below depends on the slug, so there's no shared shell worth prefetching
@@ -29,26 +31,14 @@ export default async function ProgramPage({ params }: PageProps<"/programs/[slug
 
   return (
     <>
-      <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
-        <Link href="/" className="flex items-center gap-2.5 font-logo text-xl font-bold tracking-tight lowercase">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-sm font-bold text-cream">l</span>
-          loonsclub
-        </Link>
-        <div className="flex items-center gap-7 text-sm">
-          <a href="#join" className="hidden text-ink/70 transition hover:text-ink sm:inline">
-            How to join
-          </a>
-          <a href="#about" className="hidden text-ink/70 transition hover:text-ink sm:inline">
-            About
-          </a>
-          <Link
-            href="/#enroll"
-            className="rounded-full px-4 py-2 font-medium ring-1 ring-ink/25 transition hover:bg-ink hover:text-cream hover:ring-ink"
-          >
-            Apply
-          </Link>
-        </div>
-      </nav>
+      <SiteNav
+        program={program.title}
+        items={[
+          { href: "#join", label: "How to join" },
+          { href: "#about", label: "About" },
+          { href: "/#programs", label: "All programs" },
+        ]}
+      />
 
       <main>
         <ProgramHero program={program} />
@@ -62,7 +52,7 @@ export default async function ProgramPage({ params }: PageProps<"/programs/[slug
                 From this page to <span className="text-gradient">day one</span>.
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted">
-                {program.join.length} steps, and the first one takes two minutes. Join through your school, or on your own at weekends.
+                {program.join.length} simple steps, at school or on weekends.
               </p>
             </Reveal>
             <JoinTimeline steps={program.join} />
@@ -106,15 +96,15 @@ export default async function ProgramPage({ params }: PageProps<"/programs/[slug
                 Ready to start <span className="text-gradient">something</span>?
               </h2>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href="/#enroll"
+                <EnrollPopup
+                  program={program.title}
                   className="group inline-flex items-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-8 py-4 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
                 >
                   Save a seat
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">
                     →
                   </span>
-                </Link>
+                </EnrollPopup>
                 {other?.href && (
                   <Link href={other.href} className="group inline-flex items-center gap-2 px-3 py-4 font-medium text-ink/70 transition hover:text-ink">
                     Or explore {other.title}

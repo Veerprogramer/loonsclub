@@ -32,9 +32,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Loons Club — For the Crazy Club",
+  title: "Loons Club — Student Entrepreneurship Community",
   description:
-    "A founder program for students in Chennai: spot a real problem, shape an idea, and pitch it to real founders.",
+    "An entrpreneurship program for school students: spot a real problem, shape an idea, and pitch it to real founders.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

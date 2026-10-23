@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "motion/react";
 import { useRef } from "react";
 import type { Program } from "../../lib/programs";
+import { EnrollPopup } from "../FormPopups";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const BLINDS = 6;
@@ -96,15 +97,15 @@ export default function ProgramHero({ program }: { program: Program }) {
             custom={0.85}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
-            <Link
-              href="/#enroll"
+            <EnrollPopup
+              program={program.title}
               className="group inline-flex items-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-7 py-3.5 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
             >
               Save a seat
               <span aria-hidden className="transition-transform group-hover:translate-x-1">
                 →
               </span>
-            </Link>
+            </EnrollPopup>
             <a href="#join" className="group inline-flex items-center gap-2 px-2 py-3.5 font-medium text-ink/70 transition hover:text-ink">
               How to join
               <span aria-hidden className="transition-transform group-hover:translate-y-0.5">

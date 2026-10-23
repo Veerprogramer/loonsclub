@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import { useRef, useState, type PointerEvent, type ReactNode, type RefObject } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 // `steps` lists the topics inside a longer stage, shown as small tags
 export type AgendaItem = { time?: string; title: string; detail: string; steps?: string[] };
@@ -21,12 +21,39 @@ export type ProgramCard = {
   href?: string;
 };
 
-const STICKY_TOP = 80; 
+const STICKY_TOP = 80;
+// space left under a tall card once it pins, so its last line isn't flush with the screen edge
+const BOTTOM_GAP = 24;
+
+// Cards pin and stack as you scroll. A card taller than the screen (on phones) pins by its bottom
+// edge instead of its top, so all of it has been seen before the next card slides over it.
 export default function ProgramStack({ cards }: { cards: ProgramCard[] }) {
   const refs = useRef<(HTMLDivElement | null)[]>([]);
+  const [tops, setTops] = useState<number[]>(() => cards.map(() => STICKY_TOP));
+  // read from scroll callbacks, which shouldn't wait for a render
+  const topsRef = useRef(tops);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const vh = window.innerHeight;
+      const next = refs.current.map((el) =>
+        el ? Math.min(STICKY_TOP, vh - el.offsetHeight - BOTTOM_GAP) : STICKY_TOP,
+      );
+      topsRef.current = next;
+      setTops((prev) => (prev.every((t, i) => t === next[i]) ? prev : next));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    refs.current.forEach((el) => el && ro.observe(el));
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
 
   return (
-    <div className="space-y-[10vh]">
+    <div className="space-y-[20vh] lg:space-y-[10vh]">
       {cards.map((card, i) => (
         <div
           key={i}
@@ -34,9 +61,9 @@ export default function ProgramStack({ cards }: { cards: ProgramCard[] }) {
             refs.current[i] = el;
           }}
           className="sticky"
-          style={{ top: STICKY_TOP }}
+          style={{ top: tops[i] }}
         >
-          <StackedCard card={card} wrappers={refs} nextIndex={i < cards.length - 1 ? i + 1 : null} />
+          <StackedCard card={card} wrappers={refs} tops={topsRef} nextIndex={i < cards.length - 1 ? i + 1 : null} />
         </div>
       ))}
     </div>
@@ -46,10 +73,12 @@ export default function ProgramStack({ cards }: { cards: ProgramCard[] }) {
 function StackedCard({
   card,
   wrappers,
+  tops,
   nextIndex,
 }: {
   card: ProgramCard;
   wrappers: RefObject<(HTMLDivElement | null)[]>;
+  tops: RefObject<number[]>;
   nextIndex: number | null;
 }) {
   const reduceMotion = useReducedMotion();
@@ -58,9 +87,11 @@ function StackedCard({
   const progress = useTransform(scrollY, () => {
     const el = nextIndex === null ? null : wrappers.current[nextIndex];
     if (!el) return 0;
+    // 0 as the next card enters the screen, 1 once it has pinned on top of this one
     const vh = window.innerHeight;
     const top = el.getBoundingClientRect().top;
-    return Math.min(1, Math.max(0, (vh - top) / (vh - STICKY_TOP)));
+    const pinAt = tops.current[nextIndex!] ?? STICKY_TOP;
+    return Math.min(1, Math.max(0, (vh - top) / (vh - pinAt)));
   });
 
   const rotateX = useTransform(progress, [0, 1], [0, 28]);
@@ -87,47 +118,15 @@ function StackedCard({
   );
 }
 
-// The whole card opens the program; with a mouse, an "Explore" badge stands in for the cursor
+// The whole card opens the program
 function CardLink({ href, title, children }: { href: string; title: string; children: ReactNode }) {
-  const reduceMotion = useReducedMotion();
-  const [hovering, setHovering] = useState(false);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 500, damping: 40 });
-  const springY = useSpring(y, { stiffness: 500, damping: 40 });
-
-  const track = (e: PointerEvent<HTMLAnchorElement>, entering = false) => {
-    if (e.pointerType !== "mouse") return;
-    const box = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - box.left);
-    y.set(e.clientY - box.top);
-    if (entering) {
-      springX.jump(x.get());
-      springY.jump(y.get());
-    }
-    setHovering(true);
-  };
-
   return (
     <Link
       href={href}
       aria-label={`Explore ${title}`}
-      onPointerEnter={(e) => track(e, true)}
-      onPointerMove={(e) => track(e)}
-      onPointerLeave={() => setHovering(false)}
-      className="block h-full cursor-none rounded-4xl outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-accent/50"
+      className="block h-full rounded-4xl outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-accent/50"
     >
       {children}
-      <motion.span
-        aria-hidden
-        className="pointer-events-none absolute left-0 top-0 z-20 -ml-12 -mt-12 flex h-24 w-24 items-center justify-center gap-1 rounded-full bg-ink/90 text-sm font-medium text-white shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)] backdrop-blur"
-        style={{ x: reduceMotion ? x : springX, y: reduceMotion ? y : springY }}
-        initial={false}
-        animate={{ scale: hovering ? 1 : 0, opacity: hovering ? 1 : 0 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-      >
-        Explore <span aria-hidden>→</span>
-      </motion.span>
     </Link>
   );
 }

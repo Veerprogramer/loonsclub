@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
+import { PartnerPopup } from "./FormPopups";
 
 export type Audience = "schools" | "students";
 
@@ -13,8 +14,12 @@ export type Track = {
   facts: { label: string; value: string }[];
   formats: { program: string; how: string }[];
   steps: string[];
-  cta: { label: string; href: string };
+  // either a link, or a button that opens a popup form
+  cta: { label: string } & ({ href: string } | { popup: "partner" });
 };
+
+const ctaClass =
+  "group mt-10 inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-accent-light";
 
 // One section, two audiences: a switch flips between "we come to your school" and "you come to us on weekends".
 // Nav links to #schools / #students land here with the matching side selected.
@@ -133,13 +138,17 @@ export default function WaysToJoin({ tracks }: { tracks: Track[] }) {
                 </li>
               ))}
             </ol>
-            <a
-              href={track.cta.href}
-              className="mt-10 inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-accent-light"
-            >
-              {track.cta.label}
-              <span aria-hidden>→</span>
-            </a>
+            {"popup" in track.cta ? (
+              <PartnerPopup className={ctaClass}>
+                {track.cta.label}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+              </PartnerPopup>
+            ) : (
+              <a href={track.cta.href} className={ctaClass}>
+                {track.cta.label}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+            )}
           </div>
         </motion.div>
       </AnimatePresence>

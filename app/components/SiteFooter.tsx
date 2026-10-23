@@ -22,8 +22,8 @@ export default function SiteFooter() {
             <p className="font-semibold text-cream/50">Contact</p>
             <ul className="mt-4 space-y-2 text-cream/70">
               <li>
-                <a href="mailto:hello@loonsclub.in" className="transition hover:text-cream">
-                  hello@loonsclub.in
+                <a href="mailto:info@loonsclub.com" className="transition hover:text-cream">
+                  info@loonsclub.com
                 </a>
               </li>
               <li>

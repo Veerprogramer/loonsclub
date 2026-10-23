@@ -89,7 +89,7 @@ const TRACKS: Track[] = [
       "Founders and mentors run every session at your school.",
       "Students pitch their ideas at a showcase on campus.",
     ],
-    cta: { label: "Partner with us", href: "mailto:hello@loonsclub.in?subject=School%20partnership" },
+    cta: { label: "Partner with us", popup: "partner" },
   },
   {
     key: "students",
