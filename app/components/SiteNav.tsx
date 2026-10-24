@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
 import { useEffect, useState } from "react";
-import { EnrollPopup } from "./FormPopups";
+import EnrollForm from "./EnrollForm";
+import Popup from "./Popup";
 
 export type NavItem = { href: string; label: string };
 
@@ -18,6 +19,7 @@ export default function SiteNav({ items, program }: { items: NavItem[]; program?
   const [hovered, setHovered] = useState<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
+  const [applyOpen, setApplyOpen] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -132,15 +134,9 @@ export default function SiteNav({ items, program }: { items: NavItem[]; program?
           </ul>
 
           <div className="flex items-center gap-1.5">
-            {program ? (
-              <EnrollPopup program={program} className={ctaClass}>
-                {ctaInner}
-              </EnrollPopup>
-            ) : (
-              <a href="#enroll" className={ctaClass}>
-                {ctaInner}
-              </a>
-            )}
+            <button type="button" aria-haspopup="dialog" onClick={() => setApplyOpen(true)} className={ctaClass}>
+              {ctaInner}
+            </button>
             <button
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -204,6 +200,28 @@ export default function SiteNav({ items, program }: { items: NavItem[]; program?
           )}
         </AnimatePresence>
       </motion.header>
+
+      {/* the student enrollment form, opened by Apply */}
+      <Popup
+        open={applyOpen}
+        onClose={() => setApplyOpen(false)}
+        eyebrow="Enroll"
+        title={
+          <>
+            Save a <span className="text-gradient-light">seat</span>.
+          </>
+        }
+        intro="Spots are limited so every team gets real time with a mentor."
+        points={[
+          "Fill in this form.",
+          "We will call you back within 24 hours.",
+          "Confirm your availability and we fix a date",
+          "Show up curious. No experience needed.",
+        ]}
+        badge={program}
+      >
+        <EnrollForm program={program} bare />
+      </Popup>
     </>
   );
 }

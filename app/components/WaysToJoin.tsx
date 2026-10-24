@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
-import { PartnerPopup } from "./FormPopups";
+import { EnrollPopup, PartnerPopup } from "./FormPopups";
 
 export type Audience = "schools" | "students";
 
@@ -15,7 +15,7 @@ export type Track = {
   formats: { program: string; how: string }[];
   steps: string[];
   // either a link, or a button that opens a popup form
-  cta: { label: string } & ({ href: string } | { popup: "partner" });
+  cta: { label: string } & ({ href: string } | { popup: "partner" | "enroll" });
 };
 
 const ctaClass =
@@ -138,7 +138,12 @@ export default function WaysToJoin({ tracks }: { tracks: Track[] }) {
                 </li>
               ))}
             </ol>
-            {"popup" in track.cta ? (
+            {"popup" in track.cta && track.cta.popup === "enroll" ? (
+              <EnrollPopup className={ctaClass}>
+                {track.cta.label}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+              </EnrollPopup>
+            ) : "popup" in track.cta ? (
               <PartnerPopup className={ctaClass}>
                 {track.cta.label}
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>

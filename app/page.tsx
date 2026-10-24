@@ -1,5 +1,4 @@
 import Image from "next/image";
-import EnrollForm from "./components/EnrollForm";
 import Reveal from "./components/Reveal";
 import Hero from "./components/Hero";
 import ProgramStack from "./components/ProgramStack";
@@ -108,13 +107,13 @@ const TRACKS: Track[] = [
       { program: "Becoming Entrepreneurial", how: "Weekend sessions through the year" },
     ],
     steps: [
-      "Save a seat using the form below.",
+      "Save a seat with a short form.",
       "Pick the bootcamp or the year-long program.",
       "Meet your team and your mentor on the first weekend.",
       "Build your idea with founders, weekend by weekend.",
       "Pitch to a panel of founders and investors.",
     ],
-    cta: { label: "Save a seat", href: "#enroll" },
+    cta: { label: "Save a seat", popup: "enroll" },
   },
 ];
 
@@ -270,24 +269,6 @@ export default function Home() {
                 </Reveal>
               ))}
             </ul>
-          </div>
-        </section>
-
-        {/* 4. ENROLL FORM */}
-        <section id="enroll" className="scroll-mt-4 bg-linear-to-b from-sand to-white px-5 py-24 sm:px-8 sm:py-32">
-          <div className="mx-auto max-w-3xl">
-            <Reveal className="mb-12 text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Enroll</p>
-              <h2 className="section-title mt-4">
-                Save a seat
-              </h2>
-              <p className="mt-6 text-lg leading-relaxed text-muted">
-                Spots are limited so every team gets real time with a mentor.
-              </p>
-            </Reveal>
-            <Reveal delay={100}>
-              <EnrollForm />
-            </Reveal>
           </div>
         </section>
       </main>

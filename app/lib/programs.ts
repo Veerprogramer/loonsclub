@@ -60,20 +60,12 @@ export const PROGRAMS: Program[] = ([
     sessions: [
       {
         label: "Morning",
-        format: "Talk",
-        title: "Entrepreneurship: An introduction",
-        summary: "What founders do, and why it matters.",
+        format: "Workshop",
+        title: "Startup Fundamentals",
+        summary: "What founders do, and why startups are built to grow fast.",
         topics: [
           { title: "Who founders are", detail: "People who fix what's broken." },
           { title: "Spotting problems", detail: "Everyday frustrations are opportunities." },
-        ],
-      },
-      {
-        label: "Morning",
-        format: "Workshop",
-        title: "Startup vs. business",
-        summary: "Why startups are built to grow fast.",
-        topics: [
           { title: "Ideal Customer Profile", detail: "Who you're building for." },
           { title: "Product Market Fit", detail: "Proof people want it." },
           { title: "Business model", detail: "How it makes money." },
@@ -91,8 +83,8 @@ export const PROGRAMS: Program[] = ([
       },
       {
         label: "Afternoon",
-        format: "Workshop & pitch",
-        title: "Build & pitch",
+        format: "Ideation & pitch",
+        title: "Pitch & Validate",
         summary: "Teams shape an idea and pitch it to founders.",
         topics: [
           { title: "Find the problem", detail: "One your team knows well." },
@@ -103,10 +95,9 @@ export const PROGRAMS: Program[] = ([
       },
     ],
     agenda: [
-      { title: "Entrepreneurship: An introduction", detail: "What founders do, and why it matters." },
-      { title: "Startup vs. business", detail: "Why startups are built to grow fast." },
+      { title: "Startup Fundamentals", detail: "What founders do, and why startups are built to grow fast." },
       { title: "A founder's journey", detail: "The real story behind a startup." },
-      { title: "Build & pitch", detail: "Shape an idea and pitch it to founders." },
+      { title: "Pitch & Validate", detail: "Shape an idea and pitch it to founders." },
     ],
   },
   {

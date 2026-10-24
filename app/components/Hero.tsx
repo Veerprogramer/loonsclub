@@ -33,27 +33,25 @@ export default function Hero({ nav }: { nav: NavItem[] }) {
           transition={{ staggerChildren: 0.28 }}
           className="text-center lg:text-left"
         >
-          <motion.p variants={item} className="inline-flex items-center gap-2 rounded-full bg-accent/8 px-3.5 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/20">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-            School Students Entrepreneurship program · Chennai
-          </motion.p>
-          <motion.h1 variants={item} className="mt-6">
-            <span className="block font-hero text-[clamp(2.5rem,1.6rem+3.4vw,4.75rem)] font-light leading-none tracking-[-0.02em]">
+          <motion.h1
+            variants={item}
+            className="font-hero text-[clamp(2.5rem,1.6rem+3.4vw,4.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]"
+          >
+            <span className="text-gradient block">Entrepreneurship</span>
+            <span className="block">program for school students</span>
+          </motion.h1>
+          <motion.p variants={item} className="mt-10 flex flex-wrap items-baseline justify-center gap-x-3 lg:justify-start">
+            <span className="font-hero text-[clamp(1.25rem,1rem+1vw,1.75rem)] font-light tracking-[-0.01em] text-ink/75">
               Here is to the
             </span>
-            
-            <span className="mt-5 block font-ransom text-[clamp(3.5rem,2.4rem+4.6vw,7rem)] leading-[1.05]">
-              <span className="text-gradient block">Crazy</span>
-              <span className="block pl-[0.9em] lg:pl-[1.3em]">Ones</span>
+            <span className="font-ransom text-[clamp(1.75rem,1.3rem+1.6vw,2.75rem)] leading-none">
+              <span className="text-gradient">Crazy</span> Ones
             </span>
-          </motion.h1>
-          <motion.p variants={item} className="hero-copy mx-auto mt-7 max-w-md text-lg leading-relaxed text-ink/75 sm:text-xl lg:mx-0">
-            Young minds exploring big ideas, guided by experienced founders.
           </motion.p>
           <motion.a
             variants={item}
             href="#programs"
-            className="group mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-8 py-4 text-base font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
+            className="group mt-12 inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-ink via-ink-soft to-accent px-8 py-4 text-base font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(124,58,237,0.7)]"
           >
             Explore Programs
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
